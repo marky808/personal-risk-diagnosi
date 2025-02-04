@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>パーソナルリスク診断 - 結果</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #00c300;
+      --secondary-color: #007700;
+      --background-color: #eef2f6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--background-color);
+      padding: 20px;
+      min-height: 100vh;
+      color: #333;
+    }
+    .result-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .result-container h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+    .result-score {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+    }
+    .result-text {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      color: #555;
+    }
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .cta-button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    .cta-button i { margin-right: 8px; font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+  <div class="result-container">
+    <h1 id="resultTitle"></h1>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-text" id="resultDescription"></div>
+    <br>
+    <a href="index.html" class="cta-button">
+      <i class="fab fa-line"></i>LINEに戻る
+    </a>
+  </div>
+  <script>
+    const totalScore = parseInt(localStorage.getItem("riskTotalScore"), 10) || 0;
+    let resultTitle = "";
+    let resultDescription = "";
+    // サンプルとして点数による結果判定（例）
+    if(totalScore >= 30) {
+      resultTitle = "非常に安心できる状態です";
+      resultDescription = "計画もしっかりできており、将来のリスクにも十分備えられています。";
+    } else if(totalScore >= 20) {
+      resultTitle = "比較的安心できる状態です";
+      resultDescription = "現状はまずまずですが、定期的な見直しをおすすめします。";
+    } else if(totalScore >= 10) {
+      resultTitle = "注意が必要な状態です";
+      resultDescription = "キャッシュフローの見直しが必要です。早急な対策を検討しましょう。";
+    } else {
+      resultTitle = "非常にリスクが高い状態です";
+      resultDescription = "今すぐ専門家に相談し、抜本的な対策を検討してください。";
+    }
+    document.getElementById("resultTitle").innerHTML = resultTitle;
+    document.getElementById("resultScore").innerHTML = "あなたの得点: " + totalScore + " 点";
+    document.getElementById("resultDescription").innerHTML = resultDescription;
+  </script>
+</body>
+</html>
