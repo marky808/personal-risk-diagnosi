@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>パーソナルリスク診断 - 質問</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #00c300;
+      --background-gradient: linear-gradient(135deg, #e0f7e9, #c8f0d8);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--background-gradient);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .quiz-container {
+      width: 90%;
+      max-width: 700px;
+      margin: 20px auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 10px 0;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .card h2 {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    .option-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin: 10px 0;
+      cursor: pointer;
+      background-color: #fafafa;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    .option-card:hover { background-color: #f5f5f5; transform: scale(1.02); }
+    .option-card.selected {
+      border-color: var(--primary-color);
+      background-color: #e6f9e6;
+    }
+    /* カテゴリーヘッダー */
+    .category-header {
+      background: rgba(217, 247, 190, 0.8);
+      color: var(--primary-color);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 20px 0 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    /* アニメーションキーフレーム */
+    @keyframes fadeInUpStrong {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeOutShrink {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.8); }
+    }
+    .animated { animation: fadeInUpStrong 0.8s ease-out forwards; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizArea"></div>
+  <script>
+    // サンプル質問データ：各質問に「text」と「points」を設定
+    const questions = [
+      { text: "将来のライフイベントやリスクに対して、計画を立てていますか？", points: { yes: 7, no: 0 } },
+      { text: "毎月の収支をしっかり把握していますか？", points: { yes: 7, no: 0 } },
+      { text: "毎月の貯蓄額を決めていますか？", points: { yes: 7, no: 0 } },
+      { text: "銀行以外の貯蓄手段を利用していますか？", points: { yes: 7, no: 0 } },
+      { text: "自宅以外に資産運用の拠点がありますか？", points: { yes: 7, no: 0 } }
+    ];
+    
+    let currentQuestionIndex = 0;
+    let totalScore = 0;
+    const quizArea = document.getElementById("quizArea");
+    
+    function showQuestion() {
+      quizArea.innerHTML = "";
+      // カテゴリーヘッダー（今回はリスク診断は単一カテゴリーの例として表示）
+      if(currentQuestionIndex === 0) {
+        const categoryHeader = document.createElement("div");
+        categoryHeader.className = "category-header animated";
+        categoryHeader.textContent = "キャッシュフローリスク";
+        quizArea.appendChild(categoryHeader);
+      }
+      
+      if (currentQuestionIndex < questions.length) {
+        const q = questions[currentQuestionIndex];
+        const card = document.createElement("div");
+        card.className = "card animated";
+        card.innerHTML = `<h2>${q.text}</h2>`;
+        
+        const btnYes = document.createElement("div");
+        btnYes.className = "option-card";
+        btnYes.textContent = "はい";
+        btnYes.addEventListener("click", () => {
+          totalScore += q.points.yes;
+          card.style.animation = "fadeOutShrink 0.3s ease-out forwards";
+          setTimeout(() => { currentQuestionIndex++; showQuestion(); }, 300);
+        });
+        
+        const btnNo = document.createElement("div");
+        btnNo.className = "option-card";
+        btnNo.textContent = "いいえ";
+        btnNo.addEventListener("click", () => {
+          totalScore += q.points.no;
+          card.style.animation = "fadeOutShrink 0.3s ease-out forwards";
+          setTimeout(() => { currentQuestionIndex++; showQuestion(); }, 300);
+        });
+        
+        card.appendChild(btnYes);
+        card.appendChild(btnNo);
+        quizArea.appendChild(card);
+      } else {
+        // すべての質問終了後、保存してローディングページへリダイレクト
+        localStorage.setItem("riskTotalScore", totalScore);
+        window.location.href = "loading.html";
+      }
+    }
+    showQuestion();
+  </script>
+</body>
+</html>
