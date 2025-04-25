@@ -2,10 +2,12 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>診断中...</title>
+  <title>LINE友達登録</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
       --primary-color: #00c300;
@@ -20,31 +22,130 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      color: var(--primary-color);
+      color: #333;
     }
-    .spinner {
-      width: 60px;
-      height: 60px;
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    .line-container {
+      max-width: 600px;
+      width: 90%;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .line-header {
       margin-bottom: 20px;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .loading-text { font-size: 1.2rem; }
-    .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+    .line-header h1 {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .line-logo {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      background-color: var(--primary-color);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: white;
+    }
+    .line-description {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    .qr-container {
+      margin: 20px auto;
+      max-width: 200px;
+    }
+    .qr-container img {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .line-id {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      border: 1px dashed #ccc;
+    }
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .cta-button:hover {
+      background-color: #009900;
+      transform: translateY(-3px);
+    }
+    .cta-button i { margin-right: 8px; font-size: 1.4rem; }
+    .hidden {
+      display: none;
+    }
+    .fade-in {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
 </head>
-<body class="fade-in">
-  <div class="spinner"></div>
-  <div class="loading-text">診断中...</div>
+<body>
+  <div class="line-container fade-in">
+    <div class="line-header">
+      <h1>診断結果を見るには</h1>
+      <p>LINE友達登録が必要です</p>
+    </div>
+    
+    <div class="line-logo">
+      <i class="fab fa-line"></i>
+    </div>
+    
+    <div class="line-description">
+      <p>あなたの診断結果を表示するには、下記のQRコードまたはLINE IDからLINE友達登録を行ってください。</p>
+    </div>
+    
+    <div class="qr-container">
+      <!-- ダミーQRコード（実際には適切なQRコード画像に置き換えます） -->
+      <img src="https://placehold.jp/200x200.png" alt="LINE友達登録用QRコード">
+    </div>
+    
+    <div class="line-id">
+      LINE ID: @examplelinkid
+    </div>
+    
+    <button id="registrationComplete" class="cta-button hidden">
+      <i class="fab fa-line"></i>LINE友達登録完了
+    </button>
+  </div>
+
   <script>
-    // 質問が終わった後、ローディング画面を2秒間表示してから結果ページへ遷移
+    // 8秒後に「LINE友達登録完了」ボタンを表示
     setTimeout(function() {
+      const button = document.getElementById("registrationComplete");
+      button.classList.remove("hidden");
+      button.classList.add("fade-in");
+    }, 8000);
+    
+    // ボタンクリックで結果ページへ遷移
+    document.getElementById("registrationComplete").addEventListener("click", function() {
       window.location.href = "result.html";
-    }, 2000);
+    });
   </script>
 </body>
 </html>
