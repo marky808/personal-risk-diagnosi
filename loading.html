@@ -90,12 +90,25 @@
       cursor: pointer;
       transition: background 0.3s, transform 0.3s;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-decoration: none;
     }
     .cta-button:hover {
       background-color: #009900;
       transform: translateY(-3px);
     }
     .cta-button i { margin-right: 8px; font-size: 1.4rem; }
+    .already-registered {
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+    .already-registered a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .already-registered a:hover {
+      text-decoration: underline;
+    }
     .hidden {
       display: none;
     }
@@ -103,10 +116,28 @@
       animation: fadeIn 0.8s ease-out forwards;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .loading-spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 195, 0, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+    }
   </style>
 </head>
 <body>
-  <div class="line-container fade-in">
+  <!-- LINE登録画面 -->
+  <div id="lineRegistration" class="line-container fade-in">
     <div class="line-header">
       <h1>診断結果を見るには</h1>
       <p>LINE友達登録が必要です</p>
@@ -132,20 +163,64 @@
     <button id="registrationComplete" class="cta-button hidden">
       <i class="fab fa-line"></i>LINE友達登録完了
     </button>
+    
+    <div class="already-registered">
+      <p>すでに登録されている方は<a href="https://line.me/R/ti/p/@examplelinkid" id="alreadyRegisteredLink">こちら</a>から診断結果を確認できます</p>
+    </div>
+  </div>
+  
+  <!-- 読み込み中画面 - 初期状態は非表示 -->
+  <div id="loadingScreen" class="line-container fade-in hidden">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">診断結果を読み込み中...</div>
   </div>
 
   <script>
-    // 8秒後に「LINE友達登録完了」ボタンを表示
-    setTimeout(function() {
-      const button = document.getElementById("registrationComplete");
-      button.classList.remove("hidden");
-      button.classList.add("fade-in");
-    }, 8000);
+    // URLからパラメータを取得する関数
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      const results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
     
-    // ボタンクリックで結果ページへ遷移
-    document.getElementById("registrationComplete").addEventListener("click", function() {
-      window.location.href = "result.html";
-    });
+    // LINEからのアクセスかどうかを判定
+    const fromLine = getUrlParameter('from') === 'line';
+    
+    // すでにLINEリンクを踏んだフラグがある場合も含めてチェック
+    if (fromLine || localStorage.getItem('lineRegistered') === 'true') {
+      // LINEからのアクセスなら登録済みフラグをセット
+      localStorage.setItem('lineRegistered', 'true');
+      
+      // LINE登録画面を隠して、ローディング画面を表示
+      document.getElementById('lineRegistration').classList.add('hidden');
+      document.getElementById('loadingScreen').classList.remove('hidden');
+      
+      // 少し待ってから結果ページにリダイレクト（UXのため）
+      setTimeout(function() {
+        window.location.href = "result.html";
+      }, 1500);
+    } else {
+      // 初回アクセスの場合は通常のフロー
+      // 8秒後に「LINE友達登録完了」ボタンを表示
+      setTimeout(function() {
+        const button = document.getElementById("registrationComplete");
+        button.classList.remove("hidden");
+        button.classList.add("fade-in");
+      }, 8000);
+    
+      // ボタンクリックで結果ページへ遷移し、フラグを保存
+      document.getElementById("registrationComplete").addEventListener("click", function() {
+        localStorage.setItem('lineRegistered', 'true');
+        window.location.href = "result.html";
+      });
+      
+      // すでに登録されている方へのリンクにパラメータを追加
+      document.getElementById("alreadyRegisteredLink").addEventListener("click", function(e) {
+        // リンククリック時にフラグを立てる（戻ってきた時に使用）
+        localStorage.setItem('lineRegistered', 'true');
+      });
+    }
   </script>
 </body>
 </html>
